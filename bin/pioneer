@@ -1,9 +1,12 @@
 #!/usr/bin/env node
+function requireFromLib (modulePath) {
+  return require(lib + path.join("/", modulePath));
+}
 
 var path        = require('path');
 var fs          = require('fs');
 var lib         = path.join(path.dirname(fs.realpathSync(__filename)), path.join('../', 'lib'));
-var Pioneer     = require(lib + path.join('/', 'pioneer'));
+var Pioneer     = requireFromLib('pioneer');
 
 var updateNotifier = require('update-notifier');
 var notifier = updateNotifier({packagePath: path.join('../', 'package.json')});
@@ -14,4 +17,7 @@ if (notifier.update) {
 
 global.ARGV = Array.prototype.slice.call(process.argv);
 
-new Pioneer(lib);
+new Pioneer(lib, {
+  testRunner: requireFromLib('runners/simple'),
+  configBuilder: requireFromLib('config_builder')
+});

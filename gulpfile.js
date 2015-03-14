@@ -35,6 +35,12 @@ gulp.task("default", function() {
       'src/scaffold/example.json'
     ])
     .pipe(gulp.dest("lib/scaffold"))
+
+    gulp.src([
+      'src/runners/*.coffee'
+    ])
+    .pipe(coffee())
+    .pipe(gulp.dest("lib/runners"))
 });
 
 gulp.task("watch", function() {

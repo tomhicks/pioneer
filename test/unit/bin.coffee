@@ -35,7 +35,7 @@ describe "Pioneer Kickoff File", ->
 
     it "should log the current version", ->
       currentV = require('../../package').version
-      new Pioneer("wow")
+      new Pioneer("wow", {})
       @consoleSpy.should.have.been.calledWith(currentV);
 
   describe "isVerbose", ->

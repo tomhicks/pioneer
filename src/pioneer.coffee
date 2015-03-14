@@ -2,13 +2,12 @@ moment          = require('moment')
 fs              = require('fs')
 path            = require('path')
 minimist        = require('minimist')
-configBuilder   = require('./config_builder')
 scaffoldBuilder = require('./scaffold_builder')
 color           = require('colors')
 cucumber        = require('cucumber')
 
 class Pioneer
-  constructor: (libPath) ->
+  constructor: (libPath, {@testRunner, @configBuilder}) ->
     args = minimist(process.argv.slice(2))
     process.argv = []
 
@@ -49,14 +48,9 @@ class Pioneer
       this.applySpecifications(configObject, libPath, args)
 
   applySpecifications: (obj, libPath, args) ->
-    opts = configBuilder.generateOptions(args, obj, libPath)
-    this.start(opts) if opts
-
-  start: (opts) ->
+    runnerOptions = @configBuilder.generateOptions(args, obj, libPath)
     require('./environment')()
-
-    cucumber.Cli(opts).run (success) ->
-      process.exit(if success then 0 else 1)
+    @testRunner(cucumber, runnerOptions, process.exit) if runnerOptions
 
   parseAndValidateJSON: (config, path) ->
     try
